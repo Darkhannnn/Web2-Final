@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Generator</title>
+    <link rel="stylesheet" href="/css/style.css">
+</head>
+<body>
+    <div class="container">
+        <h1>QR Code Generator</h1>
+        
+        <form id="qr-form">
+            <input type="text" id="qr-input" placeholder="Insert URL" required>
+            <button type="submit">Generate Qr-Code</button>
+        </form>
+
+        <div id="qr-container" style="display: none; margin-top: 20px;">
+            <h2>Your Qr-Code:</h2>
+            <img id="qr-image" src="" alt="QR Code">
+        </div>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Home</button>
+    </div>
+
+    <script>
+        document.getElementById('qr-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const link = document.getElementById('qr-input').value.trim();
+            if (!link) {
+                alert('Insert URL!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/qr-code/generate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ link })
+                });
+
+                const data = await response.json();
+                if (data.qrUrl) {
+                    document.getElementById('qr-image').src = data.qrUrl;
+                    document.getElementById('qr-container').style.display = 'block';
+                } else {
+                    alert('Ошибка генерации QR-кода');
+                    alert(data.qrUrl)
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Ошибка запроса на сервер');
+            }
+        });
+    </script>
+</body>
+</html>
