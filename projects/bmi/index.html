@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BMI Calculator</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .normal {
+            background-color: rgb(57, 178, 57);
+        }
+        .overweight {
+            background-color: rgb(255, 255, 40);
+        }
+        .obese {
+            background-color: rgb(255, 79, 79);
+        }
+        .underweight {
+            background-color: rgb(202, 202, 255);
+        }
+        .group {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>BMI Calculator</h1>
+
+        <form id="bmi-form">
+            <div class="group">
+                <label for="weight">Enter your weight in kg:</label>
+                <input type="text" id="weight-input" required>    
+            </div>
+
+            <div class="group">
+                <label for="height">Enter your height in m:</label>
+                <input type="text" id="height-input" required>
+            </div>
+        
+            <div class="group">
+                <button type="submit">Calculate BMI</button>
+            </div>
+        </form>
+        
+        <div id="bmi-container" style="display: none; margin-top: 20px;">
+            <h2>BMI Result</h2>
+            <div class="box">
+                <p id="bmi-result"></p>
+                <p id="bmi-category"></p>
+            </div>
+        </div>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Home</button>
+    </div>
+
+    <script>
+        document.getElementById('bmi-form').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const weight = document.getElementById('weight-input').value.trim();
+            const height = document.getElementById('height-input').value.trim();
+            if (!weight || !height || isNaN(weight) || isNaN(height) || weight <= 0 || height <= 0) {
+                alert('Please enter valid values for weight and height!');
+                return;
+            }
+
+            try {
+                const response = await fetch('/bmi/calculate', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ weight, height })
+                });
+
+                const data = await response.json();
+                if (data.bmi && data.category) {
+                    document.getElementById('bmi-result').textContent = `Your BMI: ${data.bmi.toFixed(2)}`;
+                    document.getElementById('bmi-category').textContent = `Category: ${data.category}`;
+                    document.getElementById('bmi-category').className = data.category.toLowerCase();
+                    document.getElementById('bmi-container').style.display = 'block';
+                } else {
+                    alert('Error calculating BMI');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('Error connecting to server');
+            }
+        });
+    </script>
+</body>
+</html>

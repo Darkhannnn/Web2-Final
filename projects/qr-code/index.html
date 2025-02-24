@@ -47,12 +47,11 @@
                     document.getElementById('qr-image').src = data.qrUrl;
                     document.getElementById('qr-container').style.display = 'block';
                 } else {
-                    alert('Ошибка генерации QR-кода');
-                    alert(data.qrUrl)
+                    alert('Error creating QR-code');
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('Ошибка запроса на сервер');
+                alert('Error connecting to server');
             }
         });
     </script>

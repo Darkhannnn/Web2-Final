@@ -15,3 +15,38 @@ body {
     border-radius: 10px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
+
+label {
+    display: block;
+    margin: 5px;
+}
+
+input {
+    background-color: #e4f6dc;
+    padding: 8px;
+    border: 1px solid #8abd73;
+    border-radius: 5px;
+    font-size: 16px;
+}
+
+button {
+    background-color: #8abd73;
+    color: white;
+    padding: 10px 15px;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: rgb(89, 145, 64);
+}
+
+p {
+    text-align: center;
+    font-size: 18px;
+    border-radius: 8px;
+    display: inline-block;
+    padding: 5px 10px;
+}

@@ -25,5 +25,4 @@ router.post('/generate', (req, res) => {
     res.json({ qrUrl: `/images/${qrFilename}` });
 });
 
-
 module.exports = router;
