@@ -1,47 +1,24 @@
 const express = require('express');
-const fetch = require('node-fetch');
 const axios = require('axios');
+const path = require('path');
 
-const qrRouter = require('./projects/qr-code/script.js');
-const bmiRouter = require('./projects/bmi/script.js');
-const wheatherApiRouter = require('./projects/weather_api/script.js');
+const router = express.Router();
+const weatherApiKey = '42067bd2cca6f36f6d2dcd9f11fec8aa';
+const googleApiKey = 'AIzaSyDIG2IhTZZ6itxcMbZHW9Y_t46A_0iVeKE';
 
-const app = express();
-const PORT = 3000;
-
-app.use(express.json());
-app.use(express.static('public'));
-app.use(express.urlencoded({ extended: true }));
-
-app.use('/qr-code', qrRouter);
-app.use('/bmi', bmiRouter);
-app.use('/weather_api', wheatherApiRouter);
-
-app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/public/index.html');
+router.get('/', (req, res) => {
+    res.sendFile(path.join(process.cwd(), 'projects', 'weather_api', 'index.html'));
 });
 
-app.get('/api/location', async (req, res) => {
-    try {
-        const response = await fetch('https://ipinfo.io/json?token=4253b9504d917b');
-        const data = await response.json();
-        res.json(data);
-    } catch (error) {
-        res.status(500).json({ error: 'Failed to fetch location data' });
-    }
-});
-
-app.get('/api/weather', async (req, res) => {
-    const weatherApiKey = '42067bd2cca6f36f6d2dcd9f11fec8aa';
-    const googleApiKey = 'AIzaSyDIG2IhTZZ6itxcMbZHW9Y_t46A_0iVeKE';
-
+router.get('/weather_api', async (req, res) => {
     const city = req.query.city;
     const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${city}&appid=${weatherApiKey}&units=metric`;
+    // const weatherApiUrl = `https://api.openweathermap.org/data/2.5/weather?q=Astana&appid=42067bd2cca6f36f6d2dcd9f11fec8aa&units=metric`;
     const airQualityApiUrl = `https://airquality.googleapis.com/v1/currentConditions:lookup?key=${googleApiKey}`;
-    // console.log("------------------------------------------------------------------------------------------------------------")
+    console.log("------------------------------------------------------------------------------------------------------------")
     try {
         const weatherResponse = await axios.get(weatherApiUrl);
-        // console.log('Weather:', weatherResponse.data);
+        console.log('Weather:', weatherResponse.data);
 
         const requestBody = {
             location: {
@@ -62,7 +39,7 @@ app.get('/api/weather', async (req, res) => {
                     'Content-Type': 'application/json',
                 },
             });
-            // console.log('Air Quality:', airQualityResponse.data);
+            console.log('Air Quality:', airQualityResponse.data);
 
             if (airQualityResponse.data && airQualityResponse.data.indexes && airQualityResponse.data.indexes[0]) {
                 airQualityData = {
@@ -90,10 +67,7 @@ app.get('/api/weather', async (req, res) => {
         });
     } catch (error) {
         res.status(500).json({ error: 'Failed to fetch data' });
-        console.error(error);
     };
 });
 
-app.listen(PORT, () => {
-    console.log(`✅ Server is running at http://localhost:${PORT}`);
-});
+module.exports = router;

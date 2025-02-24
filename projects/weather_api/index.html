@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weather App</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDIG2IhTZZ6itxcMbZHW9Y_t46A_0iVeKE"></script>
+    <style>
+        #map {
+            width: 100%;
+            height: 400px;
+            margin-top: 20px;
+        }
+        #weatherIcon {
+            width: 50px;
+            height: 50px;
+            margin: auto;
+            background-color: #62b43e;
+            border-radius: 10px;
+        }
+        .text-container {
+            display: flex;
+            gap: 10px;
+            align-items: center;
+            margin-top: 10px;
+        }
+        p {
+            text-align: left;
+            font-size: 16px;
+            display: block;
+            margin: 5px 0;
+            padding: 0%;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Weather App</h1>
+
+        <form id="weatherForm">
+            <input type="text" id="cityInput" placeholder="Enter city name" required>
+            <button type="submit">Get Weather</button>
+            <button id="autoFillButton">Use My City</button>
+        </form>
+
+        <div id="weatherResult" style="display: none; margin-top: 20px;">
+            <div class="text-container">
+                <h2>Weather in <span id="cityName"></span></h2>
+                <img id="weatherIcon" alt="Weather Icon" class="hidden">
+            </div>
+            <div class="text-container">
+                <div>
+                    <p><strong>Temperature:</strong> <span id="temperature"></span>°C</p>
+                    <p><strong>Description:</strong> <span id="description"></span></p>
+                    <p><strong>Coordinates:</strong> <span id="coordinates"></span></p>
+                    <p><strong>Feels Like:</strong> <span id="feelsLike"></span>°C</p>
+                    <p><strong>Humidity:</strong> <span id="humidity"></span>%</p>
+                </div>
+                <div>
+                    <p><strong>Pressure:</strong> <span id="pressure"></span> hPa</p>
+                    <p><strong>Wind Speed:</strong> <span id="windSpeed"></span> m/s</p>
+                    <p><strong>Country:</strong> <span id="country"></span></p>
+                    <p><strong>Rain Volume:</strong> <span id="rainVolume"></span></p>
+                </div>
+            </div>
+            <div id="map"></div>
+            <div id="airQualityAvailable" style="display: none; margin-top: 20px;">
+                <h2>Air Quality</h2>
+                <p><strong>Air Quality Index (AQI):</strong> <span id="aqi"></span></p>
+                <p><strong>Category:</strong> <span id="category"></span></p>
+                <p><strong>Primary Pollutant:</strong> <span id="primaryPollutant"></span></p>
+            </div>
+            <div id="airQualityNotAvailable" style="display: none; margin-top: 20px;">
+                <h2>Air Quality data not available for this location.</h2>
+            </div>
+        </div>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Home</button>
+    </div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            const weatherForm = document.getElementById("weatherForm");
+            const cityInput = document.getElementById("cityInput");
+            const weatherResult = document.getElementById("weatherResult");
+
+            const cityName = document.getElementById("cityName");
+            const temperature = document.getElementById("temperature");
+            const description = document.getElementById("description");
+            const coordinates = document.getElementById("coordinates");
+            const feelsLike = document.getElementById("feelsLike");
+            const humidity = document.getElementById("humidity");
+            const pressure = document.getElementById("pressure");
+            const windSpeed = document.getElementById("windSpeed");
+            const country = document.getElementById("country");
+            const rainVolume = document.getElementById("rainVolume");    
+            const weatherIcon = document.getElementById("weatherIcon");
+
+            const airQuality = document.getElementById("aqi");
+            const airCategory = document.getElementById("category")
+            const primaryPollutant = document.getElementById("primaryPollutant");
+
+            const autoFillButton = document.getElementById('autoFillButton');
+                        
+            autoFillButton.addEventListener('click', async () => {
+                try {
+                    const response = await fetch('/api/location');
+                    if (!response.ok) {
+                        throw new Error('Unable to fetch location data.');
+                    }
+            
+                    const data = await response.json();
+                    const city = data.city;
+            
+                    if (city) {
+                        cityInput.value = city;
+                    } else {
+                        alert('Could not determine your city.');
+                    }
+                } catch (error) {
+                    console.error('Error fetching location data:', error);
+                    alert('Failed to fetch your location. Please try again.');
+                }
+            });
+
+            weatherForm.addEventListener("submit", async (e) => {
+                e.preventDefault();
+
+                const city = cityInput.value.trim();
+                if (!city) return alert("Please enter a city name!");
+
+                try {
+                    const response = await fetch(`/api/weather?city=${city}`);
+
+                    const data = await response.json();
+
+                    cityName.textContent = city;
+                    temperature.textContent = data.temperature;
+                    description.textContent = data.description;
+                    coordinates.textContent = `Lat: ${data.coordinates.lat}, Lon: ${data.coordinates.lon}`;
+                    feelsLike.textContent = data.feels_like;
+                    humidity.textContent = data.humidity;
+                    pressure.textContent = data.pressure;
+                    windSpeed.textContent = data.wind_speed;
+                    country.textContent = data.country;
+                    rainVolume.textContent = data.rainVolume;
+
+                    if (data.airQuality != 'N/A' || data.airCategory != 'N/A' || data.dominantPollutant != 'N/A') {
+                        airQuality.textContent = data.airQuality;
+                        airCategory.textContent = data.airCategory;
+                        primaryPollutant.textContent = data.dominantPollutant;
+                        document.getElementById('airQualityAvailable').style.display = 'block';
+                        document.getElementById('airQualityNotAvailable').style.display = 'none';
+                    } else {
+                        document.getElementById('airQualityNotAvailable').style.display = 'block';
+                        document.getElementById('airQualityAvailable').style.display = 'none';
+                    }
+
+                    weatherIcon.src = `http://openweathermap.org/img/wn/${data.icon}@2x.png`;            
+                    weatherIcon.classList.remove("hidden");
+                    document.getElementById('weatherResult').style.display = 'block';
+                    
+                    const location = { lat: data.coordinates.lat, lng: data.coordinates.lon };
+
+                    const map = new google.maps.Map(document.getElementById("map"), {
+                        center: location,
+                        zoom: 12,
+                    });
+                
+                } catch (error) {
+                    alert("Error fetching weather data. Please try again!");
+                    console.error("biba");
+                }
+            });
+        });
+    </script>
+</body>
+</html>
