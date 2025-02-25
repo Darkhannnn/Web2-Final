@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registration</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+    </style>
+</head>
+<body>
+    <div class="container">
+        <form id="registerForm">
+            <h1>Please Register</h1>
+        
+            <div>
+                <label for="username">Username</label>
+                <input type="text" class="form-control" id="username" name="username" placeholder="Username">
+            </div>
+    
+            <div>
+              <input type="password" class="form-control" id="password" name="password" placeholder="Password">
+              <label for="password">Password</label>
+            </div>
+        
+            <button type="submit">Register</button>
+            <p class="lil_text">Already have an account? <a href="/login" class="lil_text">Log in</a></p>
+    
+            <p id="message"></p>
+        </form>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Main page</button>
+    </div>
+
+    <script>
+        document.getElementById('registerForm').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            const response = await fetch('/auth/register', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ username, password })
+            });
+
+            const result = await response.json();
+            document.getElementById('message').textContent = result.message || result.error;
+            if (response.ok) {
+                window.location.href = "/register-success"; // Перенаправление на страницу успешной регистрации
+            } else {
+                alert("Ошибка регистрации!");
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+

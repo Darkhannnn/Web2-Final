@@ -22,7 +22,7 @@
 
         <br>
 
-        <button onclick="window.location.href='/'">Back to Home</button>
+        <button onclick="window.location.href='/index.html'">Back to Home</button>
     </div>
 
     <script>
@@ -44,7 +44,12 @@
 
                 const data = await response.json();
                 if (data.qrUrl) {
-                    document.getElementById('qr-image').src = data.qrUrl;
+                    const img = document.getElementById('qr-image');
+                    img.src = "";
+                    setTimeout(() => {
+                        img.src = data.qrUrl + '?' + new Date().getTime();
+                        document.getElementById('qr-container').style.display = 'block';
+                    }, 100);
                     document.getElementById('qr-container').style.display = 'block';
                 } else {
                     alert('Error creating QR-code');

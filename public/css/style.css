@@ -43,12 +43,26 @@ button:hover {
     background-color: #599140;
 }
 
+.card {
+    max-width: 600px;
+    margin: 15px auto;
+    padding: 20px;
+    background: rgb(228, 246, 220);
+    border-radius: 10px;
+    box-shadow: 0 4px 6px rgb(138, 189, 115);
+}
+
 p {
     text-align: center;
     font-size: 18px;
     border-radius: 8px;
     display: inline-block;
     padding: 5px 10px;
+}
+
+.lil_text {
+    font-size: 14px;
+    color: #666;
 }
 
 textarea {

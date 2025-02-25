@@ -1,18 +1,20 @@
 const express = require('express');
 const fetch = require('node-fetch');
 const axios = require('axios');
+const path = require('path');
 
 const qrRouter = require('./projects/qr-code/script.js');
 const bmiRouter = require('./projects/bmi/script.js');
 const wheatherApiRouter = require('./projects/weather_api/script.js');
 const nodemailerrRouter = require('./projects/nodemailerr/script.js');
 const crudRouter = require('./projects/crud/script.js');
+const authRouter = require('./projects/log_reg/auth.js');
 
 const app = express();
 const PORT = 3000;
 
 app.use(express.json());
-app.use(express.static('public'));
+app.use(express.static('public', { index: false }));
 app.use(express.urlencoded({ extended: true }));
 
 app.use('/qr-code', qrRouter);
@@ -20,10 +22,29 @@ app.use('/bmi', bmiRouter);
 app.use('/weather_api', wheatherApiRouter);
 app.use('/nodemailerr', nodemailerrRouter);
 app.use('/crud', crudRouter);
+app.use('/auth', authRouter);
 
 app.get('/', (req, res) => {
-    res.sendFile(process.cwd() + '/public/index.html');
+    res.sendFile(path.join(__dirname, 'projects', 'log_reg', 'auth.html'));
 });
+app.get('/register', (req, res) => {
+    res.sendFile(path.join(__dirname, 'projects', 'log_reg', 'register.html'));
+});
+app.get('/login', (req, res) => {
+    res.sendFile(path.join(__dirname, 'projects', 'log_reg', 'login.html'));
+});
+app.get('/register-success', (req, res) => {
+    res.redirect('/login');
+});
+app.get('/login-success', (req, res) => {
+    res.redirect('/index.html');
+});
+app.get('/logout', (req, res) => {
+    res.redirect('/');
+});
+// app.get('/', (req, res) => {
+//     res.sendFile(process.cwd() + '/public/index.html');
+// });
 
 app.get('/api/location', async (req, res) => {
     try {
