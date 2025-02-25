@@ -49,7 +49,7 @@ router.get('/weather_api', async (req, res) => {
                 };
             }
         } catch (airQualityError) {
-            console.warn('Air Quality data not available for this location.');
+            // console.warn('Air Quality data not available for this location.');
         }
 
         res.json({

@@ -5,6 +5,7 @@ const axios = require('axios');
 const qrRouter = require('./projects/qr-code/script.js');
 const bmiRouter = require('./projects/bmi/script.js');
 const wheatherApiRouter = require('./projects/weather_api/script.js');
+const nodemailerrRouter = require('./projects/nodemailerr/script.js');
 
 const app = express();
 const PORT = 3000;
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use('/qr-code', qrRouter);
 app.use('/bmi', bmiRouter);
 app.use('/weather_api', wheatherApiRouter);
+app.use('/nodemailerr', nodemailerrRouter);
 
 app.get('/', (req, res) => {
     res.sendFile(process.cwd() + '/public/index.html');

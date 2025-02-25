@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nodemailer</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        textarea {
+            width: 75%;
+            padding: 10px;
+            font-size: 16px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+            height: 120px;
+            resize: vertical;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Nodemailer</h1>
+
+        <form id="emailForm">
+            <label>To who:</label>
+            <input type="email" id="to" placeholder="example@email.com" required>
+            
+            <br><br>
+    
+            <label>Subject:</label>
+            <input type="text" id="subject" placeholder="Some subject" required>
+            
+            <br><br>
+    
+            <label>Message:</label>
+            <textarea id="message" placeholder="Some text" required></textarea>
+            
+            <br><br>
+    
+            <button type="submit">Send</button>
+        </form>
+    
+        <p id="status"></p>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Home</button>
+    </div>
+
+    <script>
+        document.getElementById('emailForm').addEventListener('submit', async function (event) {
+            event.preventDefault();
+
+            const to = document.getElementById('to').value;
+            const subject = document.getElementById('subject').value;
+            const message = document.getElementById('message').value;
+
+            try {
+                const response = await fetch('/nodemailerr/send', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ to, subject, message })
+                });
+
+                const result = await response.json();
+                document.getElementById('status').innerText = result.success ? 'Email sent successfully!' : 'Error: ' + result.error;
+            } catch (error) {
+                document.getElementById('status').innerText = 'Error sending email.';
+            }
+        });
+    </script>
+</body>
+</html>
+
+
+
