@@ -6,6 +6,7 @@ const qrRouter = require('./projects/qr-code/script.js');
 const bmiRouter = require('./projects/bmi/script.js');
 const wheatherApiRouter = require('./projects/weather_api/script.js');
 const nodemailerrRouter = require('./projects/nodemailerr/script.js');
+const crudRouter = require('./projects/crud/script.js');
 
 const app = express();
 const PORT = 3000;
@@ -18,6 +19,7 @@ app.use('/qr-code', qrRouter);
 app.use('/bmi', bmiRouter);
 app.use('/weather_api', wheatherApiRouter);
 app.use('/nodemailerr', nodemailerrRouter);
+app.use('/crud', crudRouter);
 
 app.get('/', (req, res) => {
     res.sendFile(process.cwd() + '/public/index.html');

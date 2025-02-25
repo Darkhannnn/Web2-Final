@@ -40,7 +40,7 @@ button {
 }
 
 button:hover {
-    background-color: rgb(89, 145, 64);
+    background-color: #599140;
 }
 
 p {
@@ -49,4 +49,14 @@ p {
     border-radius: 8px;
     display: inline-block;
     padding: 5px 10px;
+}
+
+textarea {
+    width: 75%;
+    padding: 10px;
+    font-size: 16px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    height: 120px;
+    resize: vertical;
 }

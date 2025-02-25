@@ -9,15 +9,15 @@
 <body>
     <div class="container">
         <h2>Welcome!</h2>
-        <ul>
-            <li><a href="/qr-code">QR Code</a></li>
-            <li><a href="/nodemailerr">Nodemailer</a></li>
-            <li><a href="/bmi">BMI Calculator</a></li>
-            <li><a href="/weather_api">Weather API</a></li>
-            <li><a href="/login-form">Login Form</a></li>
-            <li><a href="/crud">CRUD App</a></li>
-        </ul>
-        <a href="/logout">Logout</a>
+        <div>
+            <button onclick="window.location.href='/qr-code'">QR-Code Generator</button>
+            <button onclick="window.location.href='/nodemailerr'">Send Email (Nodemailer)</button>
+            <button onclick="window.location.href='/bmi'">BMI Calculator</button>
+            <button onclick="window.location.href='/weather_api'">Weather App</button>
+            <button onclick="window.location.href='/crud'">Blog Management</button>
+        </div>
+        
+        <button onclick="window.location.href='/logout'">Logout</button>
     </div>
 </body>
 </html>

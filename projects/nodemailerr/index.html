@@ -5,17 +5,6 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Nodemailer</title>
     <link rel="stylesheet" href="/css/style.css">
-    <style>
-        textarea {
-            width: 75%;
-            padding: 10px;
-            font-size: 16px;
-            border: 1px solid #ccc;
-            border-radius: 5px;
-            height: 120px;
-            resize: vertical;
-        }
-    </style>
 </head>
 <body>
     <div class="container">
@@ -40,7 +29,7 @@
             <button type="submit">Send</button>
         </form>
     
-        <p id="status"></p>
+        <p id="status" style="display: none;"></p>
 
         <br>
 
@@ -64,8 +53,11 @@
 
                 const result = await response.json();
                 document.getElementById('status').innerText = result.success ? 'Email sent successfully!' : 'Error: ' + result.error;
+                document.getElementById('status').style.display = 'block';
+
             } catch (error) {
                 document.getElementById('status').innerText = 'Error sending email.';
+                document.getElementById('status').style.display = 'block';
             }
         });
     </script>

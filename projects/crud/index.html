@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD</title>
+    <link rel="stylesheet" href="/css/style.css">
+    <style>
+        .card {
+            max-width: 600px;
+            margin: 15px auto;
+            padding: 20px;
+            background: rgb(228, 246, 220);
+            border-radius: 10px;
+            box-shadow: 0 4px 6px rgb(138, 189, 115);
+        }
+        .post-title {
+            font-size: 18px;
+            font-weight: bold;
+        }
+        .post-text {
+            text-align: justify;
+            font-size: 16px;
+            margin: 10px 0;
+        }
+        .post-author {
+            font-size: 14px;
+            color: #666;
+        }
+        .litle_div {
+            margin: 15px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Blog</h1>
+        <form id="blogForm">
+            <div class="litle_div">
+                <label for="title">Title</label>
+                <input type="text" id="title" required>
+            </div>
+            <div class="litle_div">
+                <label for="body">Body</label>
+                <textarea id="body" required></textarea>
+            </div>
+            <div class="litle_div">
+                <label for="author">Author</label>
+                <input type="text" id="author">
+            </div>
+            <button type="submit">Create post</button>
+        </form>
+
+        <br>
+
+        <button onclick="window.location.href='/'">Back to Home</button>
+    </div>
+    
+    <div class="container" id="posts">
+        <button id="loadPosts">Load posts</button>
+    </div>
+    
+
+    <script>
+        const form = document.getElementById("blogForm");
+        const loadPostsBtn = document.getElementById("loadPosts");
+        const postsDiv = document.getElementById("posts");
+
+        async function loadPosts() {
+            postsDiv.innerHTML = `
+            <button id="loadPosts">Load posts</button>
+            `;
+            const res = await fetch("/crud/blogs");
+            const posts = await res.json();
+            
+            posts.forEach(post => {
+                const div = document.createElement("div");
+                div.classList.add("card");
+                div.innerHTML = `
+                    <div>
+                        <h3 class="post-title">${post.title}</h3>
+                        <p class="post-text">${post.body}</p>
+                        <p class="post-author">Author: ${post.author || "Unknown"}</p>
+                        <button onclick="deletePost('${post._id}')">Delete</button>
+                    </div>`;
+                postsDiv.appendChild(div);
+            });
+        }
+
+        form.addEventListener("submit", async (e) => {
+            e.preventDefault();
+            const title = document.getElementById("title").value;
+            const body = document.getElementById("body").value;
+            const author = document.getElementById("author").value;
+
+            await fetch("/crud/blogs", {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({ title, body, author })
+            });
+
+            form.reset();
+            loadPosts();
+        });
+
+        window.deletePost = async (id) => {
+            await fetch(`/crud/blogs/${id}`, { method: "DELETE" });
+            loadPosts();
+        };
+
+        loadPostsBtn.addEventListener("click", loadPosts);
+
+        // document.getElementById('qr-form').addEventListener('submit', async function (event) {
+        //     event.preventDefault();
+
+        //     const link = document.getElementById('qr-input').value.trim();
+        //     if (!link) {
+        //         alert('Insert URL!');
+        //         return;
+        //     }
+
+        //     try {
+        //         const response = await fetch('/qr-code/generate', {
+        //             method: 'POST',
+        //             headers: { 'Content-Type': 'application/json' },
+        //             body: JSON.stringify({ link })
+        //         });
+
+        //         const data = await response.json();
+        //         if (data.qrUrl) {
+        //             document.getElementById('qr-image').src = data.qrUrl;
+        //             document.getElementById('qr-container').style.display = 'block';
+        //         } else {
+        //             alert('Error creating QR-code');
+        //         }
+        //     } catch (error) {
+        //         console.error('Error:', error);
+        //         alert('Error connecting to server');
+        //     }
+        // });
+    </script>
+</body>
+</html>
